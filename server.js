@@ -63,8 +63,9 @@ app.get('/:id', async(req, res) => {
     // Declaration of where to have the database table initialized
     const database = client.db('todo');
     const todo = database.collection('todo');
+    // Capture the id of the todo item you want to get is details
     let todoItemId = req.params.id;
-    // Object of data coming from the frontend application
+    // get the todo item details
     const details = await todo.findOne({_id: todoItemId });
     return res.json({
         message: "Todo item details returned successfully",
