@@ -57,6 +57,20 @@ app.get('/todos', async(req, res) => {
         data: todoLists
     })
 })
+// Route/Function to get the details of a todo item
+app.get('/:id', async(req, res) => {
+    await client.connect();
+    // Declaration of where to have the database table initialized
+    const database = client.db('todo');
+    const todo = database.collection('todo');
+    let todoItemId = req.params.id;
+    // Object of data coming from the frontend application
+    const details = await todo.findOne({_id: todoItemId });
+    return res.json({
+        message: "Todo item details returned successfully",
+        data: details
+    })
+})
 
 app.listen(port, () => {
   console.log(`My first nodejs application is running on port ${port}`)
