@@ -11,37 +11,51 @@ const dbUrl = "mongodb+srv://Femithz:elev82022@cluster0.sikxt.mongodb.net/?retry
 // Connect to the cloud database
 const client = new MongoClient(dbUrl);
 
-
+// The Function is use to run the db
 async function run() {
     try {
-      await client.connect();
-      const database = client.db('todo');
-      const todo = database.collection('todo');
-      // Query to store things in the db
-      const todoDATA = await todo.insertOne({ 
-          title: 'My second task', 
-          description: 'I want to be able to create multile things!'
-        });
-        console.log(todoDATA);
+        await client.connect();
         console.log('Database is connected successfully');
     } finally {
       // Ensures that the client will close when you finish/error
-      console.log('Final connect');
       await client.close();
     }
 }
 run().catch(console.log('Connection have an issue'));
+// Entry route
+app.get('/', (req, res) => {
+    res.send('Welcome to my test api');
+})
 
-// app.get('/', (req, res) => {
-//   res.send('Hello World!');
-// })
-// Function to create to
-app.post('/create', (req, res) => {
-    let user = {
-       username: req.body.username, 
-       password: req.body.password
+// Route/Function to create a todo item and add it to the database
+app.post('/addTodoItem', async  (req, res) => {
+    await client.connect();
+    // Declaration of where to have the database table initialized
+    const database = client.db('todo');
+    const todo = database.collection('todo');
+    // Object of data coming from the frontend application
+    let todoData = {
+       title: "Hello", 
+       description: "Hello description"
     }
-    console.log('User', user);
+    todo.insertOne(todoData);
+    return res.json({
+        message: "Todo item added successfully"
+    })
+})
+
+// Route/Function to get the list of todo list
+app.get('/todos', async(req, res) => {
+    await client.connect();
+    // Declaration of where to have the database table initialized
+    const database = client.db('todo');
+    const todo = database.collection('todo');
+    // Object of data coming from the frontend application
+    const todoLists = await todo.find();
+    return res.json({
+        message: "Todo lists returned successfully",
+        data: todoLists
+    })
 })
 
 app.listen(port, () => {
