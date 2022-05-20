@@ -51,7 +51,7 @@ app.get('/todos', async(req, res) => {
     const database = client.db('todo');
     const todo = database.collection('todo');
     // Object of data coming from the frontend application
-    const todoLists = await todo.find();
+    const todoLists = await todo.find({});
     return res.json({
         message: "Todo lists returned successfully",
         data: todoLists
